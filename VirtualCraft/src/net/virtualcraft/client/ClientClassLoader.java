@@ -1,17 +1,16 @@
 package net.virtualcraft.client;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Map.Entry;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import net.virtualcraft.PublicPropertyZone;
 
@@ -40,9 +39,9 @@ public class ClientClassLoader {
 		}
 		logger.info(String.format("Total number of files. %d", files.length));
 		for(File file : files) {
-			if(file.getName().endsWith(".zip")) {	//「*.zip」拡張子の確認
+			if(file.getName().endsWith(".jar")) {	//「*.zip」拡張子の確認
 				names.add(file.getName());
-				logger.info(String.format("＋ I found a Zip file. %s", file.getName()));
+				logger.info(String.format("＋ I found a Jar file. %s", file.getName()));
 			}
 		}
 		logger.info(String.format("Number you find is %d.", names.size()));
@@ -58,52 +57,38 @@ public class ClientClassLoader {
 
 		// 検索処理
 		for(String filename : strHitFiles) {
-			logger.info(String.format("ZipFile open stream. %s\\%s", strRootPath, filename));
+			logger.info(String.format("JarFile open stream. %s\\%s", strRootPath, filename));
 			try {
-				//「*.class」を全検索
-				ArrayList<String> names = new ArrayList<String>();
-				ZipInputStream stream = new ZipInputStream(new FileInputStream(strRootPath + "\\" + filename), StandardCharsets.UTF_8);
-				for (ZipEntry entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()) {
-					if(entry.isDirectory()) continue;	//ディレクトリは飛ばす
-
-					if(entry.getName().endsWith(".class")) {	//「*.class」のフィルタ
-//						String uri = entry.getName().replace("/", ".");
-//						uri = uri.substring(0, uri.length() - 6);
-//						names.add(uri);
-						names.add(entry.getName().substring(0, entry.getName().length() - 6));
-					}
-				}
-				stream.close();
-
 				// エントリポイントの検索
 				File file = new File(strRootPath + File.separator + filename);
+
+				JarFile jar = new JarFile(file);
+				Manifest mf = jar.getManifest();
+				Attributes att = mf.getMainAttributes();
+				String name = att.getValue("Main-Class");
 				URL url = file.getCanonicalFile().toURI().toURL();
 				URLClassLoader loader = new URLClassLoader( new URL[] { url });
-
-				for(String name : names.toArray(new String[0])) {
-					try {
-						Class<?> clazz = loader.loadClass(name);
-
-						for(Class<?> iface : clazz.getInterfaces()) {
-							if (iface == IModEntryPoint.class) {
-								IModEntryPoint modEP = (IModEntryPoint)clazz.newInstance();
-								String key = modEP.getModName();
-								if(PublicPropertyZone.mapModEP.containsKey(key)) {
-									logger.info(String.format("[ERROR] %sは、登録済みです。", key));
-									break;
-								} else {
-									PublicPropertyZone.mapModEP.put(key, modEP);
-									logger.info(String.format("[ERROR] %sを、登録しました。", key));
-								}
+				try {
+					Class<?> clazz = loader.loadClass(name);
+					for(Class<?> iface : clazz.getInterfaces()) {
+						if (iface == IModEntryPoint.class) {
+							IModEntryPoint modEP = (IModEntryPoint)clazz.newInstance();
+							String key = modEP.getModName();
+							if(PublicPropertyZone.mapModEP.containsKey(key)) {
+								logger.info(String.format("[ERROR] %sは、登録済みです。", key));
+								break;
+							} else {
+								PublicPropertyZone.mapModEP.put(key, modEP);
+								logger.info(String.format("[ERROR] %sを、登録しました。", key));
 							}
 						}
-					} catch (ClassNotFoundException e) {
-						logger.info(String.format("[ERROR] ClassNotFoundException (%s)", name));
-					} catch (InstantiationException e) {
-						logger.info(String.format("[ERROR] InstantiationException (%s)", name));
-					} catch (IllegalAccessException e) {
-						logger.info(String.format("[ERROR] IllegalAccessException (%s)", name));
 					}
+				} catch (ClassNotFoundException e) {
+					logger.info(String.format("[ERROR] ClassNotFoundException (%s)", name));
+				} catch (InstantiationException e) {
+					logger.info(String.format("[ERROR] InstantiationException (%s)", name));
+				} catch (IllegalAccessException e) {
+					logger.info(String.format("[ERROR] IllegalAccessException (%s)", name));
 				}
 				loader.close();
 
