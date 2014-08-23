@@ -30,7 +30,7 @@ public class MouseThread implements Runnable {
 			watcher.PreTick();
 			leftState = new boolean[2];
 			rightState = new boolean[2];
-			while (Mouse.next()){
+			while (isRunning && Mouse.next()){
 				if (Mouse.getEventButtonState()) {		//押した場合
 					if 		(Mouse.getEventButton() == MouseEventObject.MOUSE_BUTTON_ID_LEFT) { leftState[0] = true; }
 					else if	(Mouse.getEventButton() == MouseEventObject.MOUSE_BUTTON_ID_RIGHT) { rightState[0] = true; }

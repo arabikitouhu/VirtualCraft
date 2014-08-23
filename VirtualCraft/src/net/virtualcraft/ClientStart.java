@@ -1,9 +1,12 @@
 package net.virtualcraft;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.virtualcraft.client.ClientClassLoader;
 import net.virtualcraft.control.Window;
 import net.virtualcraft.server.ServerStart;
 
@@ -15,7 +18,7 @@ import org.lwjgl.opengl.GL11;
 
 public class ClientStart {
 
-	/** @param args {width, height, isfull, IPAddr(+Port) | FQDN(+Port), WorldName, PlayerName, PlayerPass}*/
+	/** @param args {width, height, isfull, IPAddr(+Port) | FQDN(+Port), WorldName, isdebug, PlayerName, PlayerPass}*/
 	public static void main(String[] args) {
 
 		//Loggerの作成
@@ -33,9 +36,23 @@ public class ClientStart {
 		if(args.length < 5) {
 			logger.info("引数が足りないため起動に失敗しました。");
 		} else {
+			// データ用意？(
+			try {
+				PublicPropertyZone.strRootPath = (new File(".")).getCanonicalPath();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
 			PublicPropertyZone.intWindowSize_Width	= Integer.parseInt(args[0]);
 			PublicPropertyZone.intWindowSize_Height	= Integer.parseInt(args[1]);
 			PublicPropertyZone.boolIsFullScreen = Boolean.parseBoolean(args[2]);
+
+			// Modの読み込み
+			ClientClassLoader modLoader = new ClientClassLoader();
+			modLoader.onLoad();
+
+
+
 			//  ウインドウを生成する
 			try {
 				Display.setDisplayMode(new DisplayMode(PublicPropertyZone.intWindowSize_Width, PublicPropertyZone.intWindowSize_Height));
@@ -59,6 +76,10 @@ public class ClientStart {
 					logger.info(String.format("ウィンドウ破棄に成功しました。(%d x %d) WindowMode：%s", PublicPropertyZone.intWindowSize_Width, PublicPropertyZone.intWindowSize_Height, !PublicPropertyZone.boolIsFullScreen));
 				}
 			}
+
+			int texMax = GL11.glGetInteger(GL11.GL_MAX_TEXTURE_SIZE);
+			int texMax_U = GL11.glGetInteger(GL11.GL_MAX_TEXTURE_STACK_DEPTH);
+			logger.info(String.format("texMax(%d) texStack(%d)", texMax, texMax_U));
 
 			//描画用意
 			GL11.glEnable(GL11.GL_CULL_FACE);
@@ -109,9 +130,8 @@ public class ClientStart {
 //				}
 			}
 
-//			threadDraw[0].Stop();
-
 			PublicPropertyZone.threadMouse.Stop();
+			ServerStart.Stop();
 			Display.destroy();
 			logger.info(String.format("ウィンドウ破棄に成功しました。(%d x %d) WindowMode：%s", PublicPropertyZone.intWindowSize_Width, PublicPropertyZone.intWindowSize_Height, !PublicPropertyZone.boolIsFullScreen));
 		}
