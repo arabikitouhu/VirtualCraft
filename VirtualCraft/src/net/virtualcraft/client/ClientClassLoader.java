@@ -90,11 +90,11 @@ public class ClientClassLoader {
 				} catch (IllegalAccessException e) {
 					logger.info(String.format("[ERROR] IllegalAccessException (%s)", name));
 				}
-//				loader.close();
+				loader.close();
 
-				logger.info(String.format("ZipFile close stream. %s\\%s", strRootPath, filename));
+				logger.info(String.format("JarFile close stream. %s\\%s", strRootPath, filename));
 			} catch (IOException e) {
-				logger.info(String.format("[ERROR]ZipFile open stream. %s\\%s", strRootPath, filename));
+				logger.info(String.format("[ERROR]JarFile open stream. %s\\%s", strRootPath, filename));
 			}
 		}
 
