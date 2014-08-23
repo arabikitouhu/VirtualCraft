@@ -79,7 +79,7 @@ public class ClientClassLoader {
 								break;
 							} else {
 								PublicPropertyZone.mapModEP.put(key, modEP);
-								logger.info(String.format("[ERROR] %sを、登録しました。", key));
+								logger.info(String.format("%sを、登録しました。", key));
 							}
 						}
 					}
@@ -90,44 +90,8 @@ public class ClientClassLoader {
 				} catch (IllegalAccessException e) {
 					logger.info(String.format("[ERROR] IllegalAccessException (%s)", name));
 				}
-				loader.close();
+//				loader.close();
 
-//				ZipInputStream stream = new ZipInputStream(new FileInputStream(strRootPath + "\\" + filename), StandardCharsets.UTF_8);
-//
-//				for (ZipEntry entry = stream.getNextEntry(); entry != null; entry = stream.getNextEntry()) {
-//					if(entry.isDirectory()) continue;	//ディレクトリは飛ばす
-//
-//					if(entry.getName().endsWith(".class")) {	//「*.class」のフィルタ
-//						String uri = entry.getName().replace("/", ".");
-//
-//						try {
-////							Class clazz = this.loadClass(uri.substring(0, uri.length() - 6));
-////							Class clazz = this.loadClass(uri);
-//							Class clazz = this.loadClass(entry.getName().substring(0, uri.length() - 6));
-//
-//							for(Class<?> iface : clazz.getInterfaces()) {
-//								if (iface == IModEntryPoint.class) {
-//									IModEntryPoint modEP = (IModEntryPoint)clazz.newInstance();
-//									String key = modEP.getModName();
-//									if(PublicPropertyZone.mapModEP.containsKey(key)) {
-//										logger.info(String.format("[ERROR] %sは、登録済みです。", key));
-//										break;
-//									} else {
-//										PublicPropertyZone.mapModEP.put(key, modEP);
-//										logger.info(String.format("[ERROR] %sを、登録しました。", key));
-//									}
-//								}
-//							}
-//						} catch (ClassNotFoundException e) {
-//							logger.info(String.format("[ERROR] ClassNotFoundException (%s)", uri));
-//						} catch (InstantiationException e) {
-//							logger.info(String.format("[ERROR] InstantiationException (%s)", entry.getName()));
-//						} catch (IllegalAccessException e) {
-//							logger.info(String.format("[ERROR] IllegalAccessException (%s)", entry.getName()));
-//						}
-//					}
-//				}
-//				stream.close();
 				logger.info(String.format("ZipFile close stream. %s\\%s", strRootPath, filename));
 			} catch (IOException e) {
 				logger.info(String.format("[ERROR]ZipFile open stream. %s\\%s", strRootPath, filename));
