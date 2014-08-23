@@ -102,11 +102,11 @@ public class ClientStart {
 
 				GL11.glEnd();
 
-				try {
-					Thread.currentThread().sleep(16);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+//				try {
+//					Thread.currentThread().sleep(16);
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				}
 			}
 
 //			threadDraw[0].Stop();
