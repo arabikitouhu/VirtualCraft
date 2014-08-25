@@ -2,12 +2,9 @@ package net.virtualcraft.server;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import net.virtualcraft.CustomLogFormatter;
 
 public class ServerStart {
 
@@ -47,7 +44,7 @@ public class ServerStart {
 
 		//コンソールハンドラの作成＆設定
 		ConsoleHandler handler = new ConsoleHandler();
-		handler.setFormatter(new CustomLogFormatter());
+		handler.setFormatter(new net.virtualcraft.util.CustomLogFormatter());
 		handler.setLevel(Level.ALL);
 		logger.setLevel(Level.ALL);
 		logger.addHandler(handler);
@@ -79,23 +76,11 @@ public class ServerStart {
 						ServerPropertyZone.serverSocket = new ServerSocket(port);
 						ServerPropertyZone.threadServer = new ServerThread(args[1]);
 						ServerPropertyZone.threadServer.Start();
-						ServerPropertyZone.threadRemoteServer = null;
 						logger.info(String.format("サーバの設立に成功しました。Port(%d)", port));
 					} catch (IOException e) {
 						logger.info(String.format("サーバの設立に失敗しました。Port(%d)", port)); return false;
 					}
 				} else {	//それ以外
-					//リモートサーバの設立
-					try {
-						ServerPropertyZone.serverSocket = new ServerSocket(port);
-						ServerPropertyZone.remoteSocket = new Socket(serverName, port);
-						ServerPropertyZone.threadRemoteServer = new RemoteServerThread(args[1]);
-						ServerPropertyZone.threadRemoteServer.Start();
-						ServerPropertyZone.threadServer = null;
-						logger.info(String.format("リモートサーバの設立に失敗しました。ServerName(%s) Port(%d)", serverName, port));
-					} catch (IOException e) {
-						logger.info(String.format("リモートサーバの設立に失敗しました。ServerName(%s) Port(%d)", serverName, port)); return false;
-					}
 				}
 			}
 
@@ -105,6 +90,5 @@ public class ServerStart {
 
 	public static void Stop() {
 		if(ServerPropertyZone.threadServer != null) { ServerPropertyZone.threadServer.Stop(); }
-		if(ServerPropertyZone.threadRemoteServer != null) { ServerPropertyZone.threadRemoteServer.Stop(); }
 	}
 }

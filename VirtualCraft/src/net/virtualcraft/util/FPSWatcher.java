@@ -3,8 +3,6 @@ package net.virtualcraft.util;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.virtualcraft.PublicPropertyZone;
-
 public class FPSWatcher {
 
 	private int intFrame;
@@ -21,10 +19,10 @@ public class FPSWatcher {
 
 	private long longBeforeTime;
 
-	public FPSWatcher(int fixedFrame, String name) {
-		logger = Logger.getLogger(name + " FPSWather");
-		logger.setLevel(Level.INFO);
-		logger.setParent(PublicPropertyZone.logger);
+	public FPSWatcher(int fixedFrame, String name, Logger logger) {
+		this.logger = Logger.getLogger(name + " FPSWather");
+		this.logger.setLevel(Level.INFO);
+		this.logger.setParent(logger);
 
 
 		intFixedFrame = fixedFrame;

@@ -11,7 +11,7 @@ public class ServerThread implements Runnable {
 
 	public ServerThread(String worldName) {
 		thread = new Thread(this, "ServerThread");
-		watcher = new FPSWatcher(90, "ServerThread");
+		watcher = new FPSWatcher(90, "ServerThread", ServerPropertyZone.logger);
 	}
 
 	@Override

@@ -17,5 +17,4 @@ public class ServerPropertyZone {
 	/** リモートサーバ時に使用*/			public static Socket remoteSocket;
 
 	/** サーバスレッド */					public static ServerThread threadServer;
-	/** リモートサーバスレッド */			public static RemoteServerThread threadRemoteServer;
 }

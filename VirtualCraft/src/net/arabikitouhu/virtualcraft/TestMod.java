@@ -4,7 +4,7 @@ import net.virtualcraft.client.IModEntryPoint;
 
 public class TestMod implements IModEntryPoint {
 
-	public static int BASE_ItemID;
+	public static int BASE_ID;
 
 	@Override
 	public String getModName() { return "TestMod"; }
@@ -13,7 +13,7 @@ public class TestMod implements IModEntryPoint {
 	public String getModVersion() { return "1.0"; }
 
 	@Override
-	public void setItemIDStartPosition(int start) { BASE_ItemID = start; }
+	public void setIDStartPosition(int start) { BASE_ID = start; }
 
 	@Override
 	public void preInitialize() {

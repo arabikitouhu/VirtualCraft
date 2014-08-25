@@ -1,4 +1,4 @@
-package net.virtualcraft;
+package net.virtualcraft.util;
 
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;

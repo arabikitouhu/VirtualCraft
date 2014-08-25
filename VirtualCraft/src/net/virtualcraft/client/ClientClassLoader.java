@@ -26,7 +26,7 @@ public class ClientClassLoader {
 
 		logger = Logger.getLogger("Client ClassLoader");
 		logger.setLevel(Level.INFO);
-		logger.setParent(PublicPropertyZone.logger);
+		logger.setParent(PublicPropertyZone.loggerClient);
 
 		ArrayList<String> names = new ArrayList<String>();
 
@@ -102,7 +102,7 @@ public class ClientClassLoader {
 		// 読込処理(開始位置の設定＆初期化(前処理))
 		for(Entry<String, IModEntryPoint> entry : PublicPropertyZone.mapModEP.entrySet()) {
 			IModEntryPoint ep = entry.getValue();
-			ep.setItemIDStartPosition(entry.getKey().equals("VirtualCraft StarterSet") ? 0 : startPoint);
+			ep.setIDStartPosition(entry.getKey().equals("VirtualCraft StarterSet") ? 0 : startPoint);
 			startPoint += 65536;
 			ep.preInitialize();
 		}

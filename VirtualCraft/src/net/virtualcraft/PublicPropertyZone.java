@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.virtualcraft.client.IModEntryPoint;
 import net.virtualcraft.control.Window;
+import net.virtualcraft.server.RemoteServerThread;
 
 public class PublicPropertyZone {
 
@@ -12,7 +13,9 @@ public class PublicPropertyZone {
 	public static final String APPLICATION_VERSION = "0.1a";
 
 	/** ロガー(ClientApp {version}) */
-	public static Logger logger;
+	public static Logger loggerClient;
+	/** ロガー(RemoteServerApp {version}) */
+	public static Logger loggerRemoteServer;
 
 	/** [参照変数]ウィンドウサイズ(Width) */
 	public static int intWindowSize_Width;
@@ -20,6 +23,12 @@ public class PublicPropertyZone {
 	public static int intWindowSize_Height;
 	/** [参照変数]フルスクリーン判定値 */
 	public static boolean boolIsFullScreen;
+	/** [参照変数]サーバー名 */
+	public static String strServerName;
+	/** [参照変数]サーバーポート */
+	public static int intServerPort;
+	/** [参照変数]ワールド名 */
+	public static String strWorldName;
 
 	/** ゲームループの継続判定値 */
 	public static boolean canRunning;
@@ -35,6 +44,7 @@ public class PublicPropertyZone {
 	/** Modエントリーポイント一覧 */
 	public static HashMap<String, IModEntryPoint> mapModEP = new HashMap<String, IModEntryPoint>();
 
-
+	/** リモートサーバスレッド */
+	public static RemoteServerThread threadRemoteServer;
 
 }

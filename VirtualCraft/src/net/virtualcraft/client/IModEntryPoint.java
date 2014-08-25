@@ -9,8 +9,8 @@ public interface IModEntryPoint {
 	/** getter(Modバージョン) */
 	public String getModVersion();
 
-	/** setter(ItemID開始位置) */
-	public void setItemIDStartPosition(int start);
+	/** setter(ID開始位置) */
+	public void setIDStartPosition(int start);
 
 	/** 初期化(前処理) */
 	public void preInitialize();

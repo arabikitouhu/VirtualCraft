@@ -20,7 +20,7 @@ public class MouseThread implements Runnable {
 	public MouseThread(Window parent) {
 		parentControl = parent;
 		thread = new Thread(this, "MouseThread");
-		watcher = new FPSWatcher(60, "MouseThread");
+		watcher = new FPSWatcher(60, "MouseThread", PublicPropertyZone.loggerClient);
 	}
 
 	@Override

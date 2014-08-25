@@ -8,7 +8,9 @@ import java.util.logging.Logger;
 
 import net.virtualcraft.client.ClientClassLoader;
 import net.virtualcraft.control.Window;
+import net.virtualcraft.server.RemoteServerThread;
 import net.virtualcraft.server.ServerStart;
+import net.virtualcraft.util.CustomLogFormatter;
 
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
@@ -22,7 +24,7 @@ public class ClientStart {
 	public static void main(String[] args) {
 
 		//Loggerの作成
-		Logger logger = PublicPropertyZone.logger = Logger.getLogger("ClientApp " + PublicPropertyZone.APPLICATION_VERSION);
+		Logger logger = PublicPropertyZone.loggerClient = Logger.getLogger("ClientApp " + PublicPropertyZone.APPLICATION_VERSION);
 		logger.setUseParentHandlers(false);	//親に通知しない
 
 		//コンソールハンドラの作成＆設定
@@ -51,6 +53,23 @@ public class ClientStart {
 			ClientClassLoader modLoader = new ClientClassLoader();
 			modLoader.onLoad();
 
+			//リモートサーバの作成(引数から必要データの加工)
+			String serverName; int port;
+			{
+				String[] splitWord = args[3].split(" ");
+				if(splitWord.length == 1) {	//ポート指定がない
+					port = 12525;
+				} else {
+					try {	//ポート番号の取得
+						port = Integer.parseInt(splitWord[1]);
+					} catch (NumberFormatException e) {	//失敗時は、初期値へ
+						port = 12525;
+					}
+				}
+				serverName = splitWord[0];
+			}
+			PublicPropertyZone.threadRemoteServer = new RemoteServerThread(serverName, port, args[4]);
+			PublicPropertyZone.threadRemoteServer.Start();
 
 
 			//  ウインドウを生成する
